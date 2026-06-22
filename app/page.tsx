@@ -199,262 +199,325 @@ ${events
   }
 
   return (
-    <main className="min-h-screen bg-green-900 text-white p-8">
-      <h1 className="text-5xl font-bold mb-6">Rugby Analysis Platform</h1>
+    <main className="min-h-screen bg-[#0B1120] text-white">
+      <div className="border-b border-slate-800 bg-[#020617] px-8 py-5">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.3em] text-cyan-400">
+              Attack Analysis
+            </p>
+            <h1 className="text-4xl font-black tracking-tight">
+              Rugby Analysis Platform
+            </h1>
+          </div>
 
-      <div className="bg-slate-800 rounded-lg p-4 mb-6">
-        <h2 className="text-2xl mb-4">Match Details</h2>
-
-        <div className="grid grid-cols-3 gap-4">
-          <input
-            className="bg-white text-black p-3 rounded"
-            placeholder="Your Team"
-            value={matchName}
-            onChange={(e) => setMatchName(e.target.value)}
-          />
-
-          <input
-            className="bg-white text-black p-3 rounded"
-            placeholder="Opposition"
-            value={opposition}
-            onChange={(e) => setOpposition(e.target.value)}
-          />
-
-          <input
-            className="bg-white text-black p-3 rounded"
-            placeholder="Competition"
-            value={competition}
-            onChange={(e) => setCompetition(e.target.value)}
-          />
+          <div className="text-right">
+            <p className="text-sm text-slate-400">Session Status</p>
+            <p className="text-green-400 font-bold">Live</p>
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-5 gap-4 mb-6">
-        <div className="bg-slate-800 rounded-lg p-4">
-          <p className="text-slate-300">Total Attacks</p>
-          <p className="text-4xl font-bold">{totalAttacks}</p>
-        </div>
+      <div className="p-8">
+        <section className="mb-6 rounded-2xl border border-slate-800 bg-slate-950 p-5 shadow-xl">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-xl font-bold">Match Setup</h2>
+            <p className="text-sm text-slate-400">Single-session local save</p>
+          </div>
 
-        <div className="bg-slate-800 rounded-lg p-4">
-          <p className="text-slate-300">Tries</p>
-          <p className="text-4xl font-bold">{tries}</p>
-        </div>
-
-        <div className="bg-slate-800 rounded-lg p-4">
-          <p className="text-slate-300">Ball Losses</p>
-          <p className="text-4xl font-bold">{ballLosses}</p>
-        </div>
-
-        <div className="bg-slate-800 rounded-lg p-4">
-          <p className="text-slate-300">Lineouts</p>
-          <p className="text-3xl font-bold">
-            {lineoutsWon}W / {lineoutsLost}L
-          </p>
-        </div>
-
-        <div className="bg-slate-800 rounded-lg p-4">
-          <p className="text-slate-300">Scrums</p>
-          <p className="text-3xl font-bold">
-            {scrumsWon}W / {scrumsLost}L
-          </p>
-        </div>
-      </div>
-
-      <div className="flex gap-3 mb-6">
-        <button
-          onClick={exportToTXT}
-          className="bg-yellow-500 text-black font-bold p-3 rounded"
-        >
-          Export TXT Report
-        </button>
-
-        <button
-          onClick={saveMatch}
-          className="bg-blue-600 text-white font-bold p-3 rounded"
-        >
-          Save Match
-        </button>
-
-        <button
-          onClick={clearMatch}
-          className="bg-red-600 text-white font-bold p-3 rounded"
-        >
-          Clear Match
-        </button>
-      </div>
-
-      <div className="grid grid-cols-2 gap-6">
-        <div className="bg-black rounded-lg p-4">
-          <input
-            className="w-full bg-white text-black p-3 rounded mb-4"
-            placeholder="Paste YouTube match link here"
-            value={youtubeUrl}
-            onChange={(e) => setYoutubeUrl(e.target.value)}
-          />
-
-          {videoId ? (
-            <YouTube
-              videoId={videoId}
-              opts={{
-                width: "100%",
-                height: "360",
-                playerVars: {
-                  controls: 1,
-                },
-              }}
-              onReady={(event) => setPlayer(event.target)}
+          <div className="grid grid-cols-3 gap-4">
+            <input
+              className="rounded-lg border border-slate-700 bg-slate-900 p-3 text-white outline-none focus:border-cyan-400"
+              placeholder="Your Team"
+              value={matchName}
+              onChange={(e) => setMatchName(e.target.value)}
             />
+
+            <input
+              className="rounded-lg border border-slate-700 bg-slate-900 p-3 text-white outline-none focus:border-cyan-400"
+              placeholder="Opposition"
+              value={opposition}
+              onChange={(e) => setOpposition(e.target.value)}
+            />
+
+            <input
+              className="rounded-lg border border-slate-700 bg-slate-900 p-3 text-white outline-none focus:border-cyan-400"
+              placeholder="Competition"
+              value={competition}
+              onChange={(e) => setCompetition(e.target.value)}
+            />
+          </div>
+        </section>
+
+        <section className="mb-6 grid grid-cols-5 gap-4">
+          <div className="rounded-2xl border border-slate-800 bg-slate-950 p-5">
+            <p className="text-xs uppercase tracking-widest text-slate-400">
+              Total Attacks
+            </p>
+            <p className="mt-2 text-5xl font-black">{totalAttacks}</p>
+          </div>
+
+          <div className="rounded-2xl border border-slate-800 bg-slate-950 p-5">
+            <p className="text-xs uppercase tracking-widest text-slate-400">
+              Tries
+            </p>
+            <p className="mt-2 text-5xl font-black text-green-400">{tries}</p>
+          </div>
+
+          <div className="rounded-2xl border border-slate-800 bg-slate-950 p-5">
+            <p className="text-xs uppercase tracking-widest text-slate-400">
+              Ball Losses
+            </p>
+            <p className="mt-2 text-5xl font-black text-red-400">{ballLosses}</p>
+          </div>
+
+          <div className="rounded-2xl border border-slate-800 bg-slate-950 p-5">
+            <p className="text-xs uppercase tracking-widest text-slate-400">
+              Lineouts
+            </p>
+            <p className="mt-2 text-4xl font-black">
+              {lineoutsWon}W / {lineoutsLost}L
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-slate-800 bg-slate-950 p-5">
+            <p className="text-xs uppercase tracking-widest text-slate-400">
+              Scrums
+            </p>
+            <p className="mt-2 text-4xl font-black">
+              {scrumsWon}W / {scrumsLost}L
+            </p>
+          </div>
+        </section>
+
+        <section className="mb-6 flex gap-3">
+          <button
+            onClick={exportToTXT}
+            className="rounded-lg bg-cyan-400 px-5 py-3 font-bold text-slate-950 hover:bg-cyan-300"
+          >
+            Export TXT Report
+          </button>
+
+          <button
+            onClick={saveMatch}
+            className="rounded-lg bg-slate-700 px-5 py-3 font-bold text-white hover:bg-slate-600"
+          >
+            Save Match
+          </button>
+
+          <button
+            onClick={clearMatch}
+            className="rounded-lg bg-red-600 px-5 py-3 font-bold text-white hover:bg-red-500"
+          >
+            Clear Match
+          </button>
+        </section>
+
+        <section className="grid grid-cols-2 gap-6">
+          <div className="rounded-2xl border border-slate-800 bg-slate-950 p-5 shadow-xl">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-xl font-bold">Match Video</h2>
+              <p className="text-sm text-slate-400">
+                Timestamp synced tagging
+              </p>
+            </div>
+
+            <input
+              className="mb-4 w-full rounded-lg border border-slate-700 bg-slate-900 p-3 text-white outline-none focus:border-cyan-400"
+              placeholder="Paste YouTube match link here"
+              value={youtubeUrl}
+              onChange={(e) => setYoutubeUrl(e.target.value)}
+            />
+
+            <div className="overflow-hidden rounded-xl border border-slate-800 bg-black">
+              {videoId ? (
+                <YouTube
+                  videoId={videoId}
+                  opts={{
+                    width: "100%",
+                    height: "390",
+                    playerVars: {
+                      controls: 1,
+                    },
+                  }}
+                  onReady={(event) => setPlayer(event.target)}
+                />
+              ) : (
+                <div className="flex h-[390px] items-center justify-center text-slate-500">
+                  Paste a YouTube match link above to load video
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-slate-800 bg-slate-950 p-5 shadow-xl">
+            <h2 className="mb-4 text-xl font-bold">Field Zone</h2>
+
+            <div className="mb-6 grid grid-cols-5 gap-2">
+              {zones.map((zone) => (
+                <button
+                  key={zone}
+                  onClick={() => setSelectedZone(zone)}
+                  className={`rounded-lg px-3 py-4 text-sm font-bold ${
+                    selectedZone === zone
+                      ? "bg-cyan-400 text-slate-950"
+                      : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                  }`}
+                >
+                  {zone}
+                </button>
+              ))}
+            </div>
+
+            <div className="mb-6 rounded-xl border border-slate-700 bg-slate-900 p-4">
+              <div className="mb-3 flex items-center justify-between">
+                <h2 className="text-lg font-bold">Current Attack</h2>
+                {attackActive && (
+                  <span className="rounded-full bg-green-500/20 px-3 py-1 text-xs font-bold text-green-400">
+                    Active
+                  </span>
+                )}
+              </div>
+
+              {attackActive ? (
+                <>
+                  <div className="mb-4 grid grid-cols-2 gap-3">
+                    <div className="rounded-lg bg-slate-800 p-3">
+                      <p className="text-xs text-slate-400">Start Zone</p>
+                      <p className="font-bold">{attackStartZone}</p>
+                    </div>
+
+                    <div className="rounded-lg bg-slate-800 p-3">
+                      <p className="text-xs text-slate-400">Phases</p>
+                      <p className="font-bold">{phaseCount}</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={addPhase}
+                      className="rounded-lg bg-blue-600 p-3 font-bold hover:bg-blue-500"
+                    >
+                      + Phase
+                    </button>
+
+                    <button
+                      onClick={() => finishAttack("Try")}
+                      className="rounded-lg bg-green-500 p-3 font-bold text-slate-950 hover:bg-green-400"
+                    >
+                      Try
+                    </button>
+
+                    <button
+                      onClick={() => finishAttack("Ball Lost")}
+                      className="rounded-lg bg-red-600 p-3 font-bold hover:bg-red-500"
+                    >
+                      Ball Lost
+                    </button>
+
+                    <button
+                      onClick={() => finishAttack("Penalty Won")}
+                      className="rounded-lg bg-cyan-500 p-3 font-bold text-slate-950 hover:bg-cyan-400"
+                    >
+                      Penalty Won
+                    </button>
+
+                    <button
+                      onClick={() => finishAttack("Kick")}
+                      className="col-span-2 rounded-lg bg-slate-700 p-3 font-bold hover:bg-slate-600"
+                    >
+                      Kick
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <p className="text-slate-400">No active attack</p>
+              )}
+            </div>
+
+            <h2 className="mb-4 text-xl font-bold">Attack Coach Events</h2>
+
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                onClick={() => addEvent("Lineout Won")}
+                className="rounded-lg bg-blue-600 p-3 font-bold hover:bg-blue-500"
+              >
+                Lineout Won
+              </button>
+
+              <button
+                onClick={() => addEvent("Lineout Lost")}
+                className="rounded-lg bg-red-600 p-3 font-bold hover:bg-red-500"
+              >
+                Lineout Lost
+              </button>
+
+              <button
+                onClick={() => addEvent("Scrum Won")}
+                className="rounded-lg bg-blue-600 p-3 font-bold hover:bg-blue-500"
+              >
+                Scrum Won
+              </button>
+
+              <button
+                onClick={() => addEvent("Scrum Lost")}
+                className="rounded-lg bg-red-600 p-3 font-bold hover:bg-red-500"
+              >
+                Scrum Lost
+              </button>
+
+              <button
+                onClick={startAttack}
+                className="rounded-lg bg-green-600 p-3 font-bold hover:bg-green-500"
+              >
+                Attack Entry
+              </button>
+
+              <button
+                onClick={() => addEvent("Ball Lost")}
+                className="rounded-lg bg-red-700 p-3 font-bold hover:bg-red-600"
+              >
+                Ball Lost
+              </button>
+
+              <button
+                onClick={() => addEvent("Try Scored")}
+                className="col-span-2 rounded-lg bg-cyan-400 p-3 font-bold text-slate-950 hover:bg-cyan-300"
+              >
+                Try Scored
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section className="mt-6 rounded-2xl border border-slate-800 bg-slate-950 p-5 shadow-xl">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-xl font-bold">Event Log</h2>
+            <p className="text-sm text-slate-400">
+              Click any event to jump to timestamp
+            </p>
+          </div>
+
+          {events.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-slate-700 p-8 text-center text-slate-500">
+              No events tagged yet.
+            </div>
           ) : (
-            <div className="h-96 flex items-center justify-center text-slate-400 border border-slate-700 rounded">
-              Paste a YouTube match link above to load video
+            <div className="space-y-2">
+              {events.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => jumpTo(item.seconds)}
+                  className="grid w-full grid-cols-3 rounded-lg border border-slate-800 bg-slate-900 p-3 text-left hover:border-cyan-400 hover:bg-slate-800"
+                >
+                  <span className="font-mono text-cyan-400">{item.time}</span>
+                  <span className="font-bold">{item.event}</span>
+                  <span className="text-right text-slate-300">{item.zone}</span>
+                </button>
+              ))}
             </div>
           )}
-        </div>
-
-        <div className="bg-slate-800 rounded-lg p-4">
-          <h2 className="text-2xl mb-4">Field Zone</h2>
-
-          <div className="grid grid-cols-5 gap-2 mb-6">
-            {zones.map((zone) => (
-              <button
-                key={zone}
-                onClick={() => setSelectedZone(zone)}
-                className={`p-3 rounded ${
-                  selectedZone === zone
-                    ? "bg-yellow-500 text-black"
-                    : "bg-slate-600"
-                }`}
-              >
-                {zone}
-              </button>
-            ))}
-          </div>
-
-          <div className="bg-slate-700 rounded-lg p-4 mb-6">
-            <h2 className="text-xl font-bold mb-2">Current Attack</h2>
-
-            {attackActive ? (
-              <>
-                <p>Start Zone: {attackStartZone}</p>
-                <p>Phases: {phaseCount}</p>
-
-                <div className="grid grid-cols-2 gap-2 mt-3">
-                  <button
-                    onClick={addPhase}
-                    className="bg-blue-500 p-2 rounded"
-                  >
-                    + Phase
-                  </button>
-
-                  <button
-                    onClick={() => finishAttack("Try")}
-                    className="bg-yellow-500 text-black p-2 rounded"
-                  >
-                    Try
-                  </button>
-
-                  <button
-                    onClick={() => finishAttack("Ball Lost")}
-                    className="bg-red-600 p-2 rounded"
-                  >
-                    Ball Lost
-                  </button>
-
-                  <button
-                    onClick={() => finishAttack("Penalty Won")}
-                    className="bg-green-600 p-2 rounded"
-                  >
-                    Penalty Won
-                  </button>
-
-                  <button
-                    onClick={() => finishAttack("Kick")}
-                    className="bg-slate-500 p-2 rounded"
-                  >
-                    Kick
-                  </button>
-                </div>
-              </>
-            ) : (
-              <p>No active attack</p>
-            )}
-          </div>
-
-          <h2 className="text-2xl mb-4">Attack Coach Events</h2>
-
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              onClick={() => addEvent("Lineout Won")}
-              className="bg-blue-600 p-3 rounded"
-            >
-              Lineout Won
-            </button>
-
-            <button
-              onClick={() => addEvent("Lineout Lost")}
-              className="bg-red-600 p-3 rounded"
-            >
-              Lineout Lost
-            </button>
-
-            <button
-              onClick={() => addEvent("Scrum Won")}
-              className="bg-blue-600 p-3 rounded"
-            >
-              Scrum Won
-            </button>
-
-            <button
-              onClick={() => addEvent("Scrum Lost")}
-              className="bg-red-600 p-3 rounded"
-            >
-              Scrum Lost
-            </button>
-
-            <button
-              onClick={startAttack}
-              className="bg-green-600 p-3 rounded"
-            >
-              Attack Entry
-            </button>
-
-            <button
-              onClick={() => addEvent("Ball Lost")}
-              className="bg-red-700 p-3 rounded"
-            >
-              Ball Lost
-            </button>
-
-            <button
-              onClick={() => addEvent("Try Scored")}
-              className="bg-yellow-500 text-black p-3 rounded"
-            >
-              Try Scored
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-slate-800 rounded-lg p-4 mt-6">
-        <h2 className="text-2xl mb-4">Event Log</h2>
-
-        {events.length === 0 ? (
-          <p className="text-slate-300">No events tagged yet.</p>
-        ) : (
-          <div className="space-y-2">
-            {events.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => jumpTo(item.seconds)}
-                className="w-full bg-slate-700 p-3 rounded flex justify-between hover:bg-slate-600"
-              >
-                <span>{item.time}</span>
-                <span>{item.event}</span>
-                <span>{item.zone}</span>
-              </button>
-            ))}
-          </div>
-        )}
+        </section>
       </div>
     </main>
   );
