@@ -95,6 +95,10 @@ export default function Home() {
     setPhaseCount(0);
   }
 
+  function undoLastEvent() {
+    setEvents((prev) => prev.slice(1));
+  }
+
   function getVideoSeconds() {
     return player ? player.getCurrentTime() : 0;
   }
@@ -213,7 +217,7 @@ ${events
 
           <div className="text-right">
             <p className="text-sm text-slate-400">Session Status</p>
-            <p className="text-green-400 font-bold">Live</p>
+            <p className="font-bold text-green-400">Analysis Ready</p>
           </div>
         </div>
       </div>
@@ -268,7 +272,9 @@ ${events
             <p className="text-xs uppercase tracking-widest text-slate-400">
               Ball Losses
             </p>
-            <p className="mt-2 text-5xl font-black text-red-400">{ballLosses}</p>
+            <p className="mt-2 text-5xl font-black text-red-400">
+              {ballLosses}
+            </p>
           </div>
 
           <div className="rounded-2xl border border-slate-800 bg-slate-950 p-5">
@@ -303,6 +309,14 @@ ${events
             className="rounded-lg bg-slate-700 px-5 py-3 font-bold text-white hover:bg-slate-600"
           >
             Save Match
+          </button>
+
+          <button
+            onClick={undoLastEvent}
+            disabled={events.length === 0}
+            className="rounded-lg bg-orange-500 px-5 py-3 font-bold text-slate-950 hover:bg-orange-400 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            Undo Last Event
           </button>
 
           <button
@@ -351,22 +365,49 @@ ${events
           </div>
 
           <div className="rounded-2xl border border-slate-800 bg-slate-950 p-5 shadow-xl">
-            <h2 className="mb-4 text-xl font-bold">Field Zone</h2>
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-xl font-bold">Interactive Pitch</h2>
+              <span className="rounded-full bg-cyan-400/10 px-3 py-1 text-sm font-bold text-cyan-400">
+                Selected Zone: {selectedZone}
+              </span>
+            </div>
 
-            <div className="mb-6 grid grid-cols-5 gap-2">
-              {zones.map((zone) => (
-                <button
-                  key={zone}
-                  onClick={() => setSelectedZone(zone)}
-                  className={`rounded-lg px-3 py-4 text-sm font-bold ${
-                    selectedZone === zone
-                      ? "bg-cyan-400 text-slate-950"
-                      : "bg-slate-800 text-slate-300 hover:bg-slate-700"
-                  }`}
-                >
-                  {zone}
-                </button>
-              ))}
+            <div className="mb-6 overflow-hidden rounded-2xl border-2 border-white/70 bg-green-800 shadow-inner">
+              <div className="grid h-44 grid-cols-5">
+                {zones.map((zone, index) => (
+                  <button
+                    key={zone}
+                    onClick={() => setSelectedZone(zone)}
+                    className={`relative border-r border-white/50 transition ${
+                      selectedZone === zone
+                        ? "bg-cyan-400 text-slate-950"
+                        : "bg-green-700/80 text-white hover:bg-green-600"
+                    } ${index === zones.length - 1 ? "border-r-0" : ""}`}
+                  >
+                    <div className="absolute left-1 top-1 text-[10px] font-bold uppercase tracking-widest opacity-70">
+                      {index === 0 && "Try Line"}
+                      {index === 1 && "22m"}
+                      {index === 2 && "Halfway"}
+                      {index === 3 && "22m"}
+                      {index === 4 && "Try Line"}
+                    </div>
+
+                    <div className="absolute inset-y-0 left-1/2 w-px bg-white/20" />
+
+                    <span className="relative z-10 text-sm font-black">
+                      {zone}
+                    </span>
+                  </button>
+                ))}
+              </div>
+
+              <div className="grid grid-cols-5 border-t border-white/40 bg-green-900 text-center text-[10px] font-bold uppercase tracking-widest text-white/70">
+                <div>Own Goal Area</div>
+                <div>Exit Zone</div>
+                <div>Middle Third</div>
+                <div>Launch Zone</div>
+                <div>Red Zone</div>
+              </div>
             </div>
 
             <div className="mb-6 rounded-xl border border-slate-700 bg-slate-900 p-4">
