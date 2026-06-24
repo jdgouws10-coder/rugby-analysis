@@ -857,7 +857,7 @@ ${group.clips
                   onClick={() => setActiveTool("clips")}
                   className="w-full rounded-lg bg-red-600 px-5 py-4 text-lg font-bold text-white hover:bg-red-500"
                 >
-                  Launch Clip Creator →
+                  Desktop App Info →
                 </button>
               </div>
 
@@ -888,10 +888,6 @@ ${group.clips
   }
 
   if (activeTool === "clips") {
-    const source = clipSource;
-    const sourceEvents: EventLog[] = source?.events || [];
-    const offset = parseTimeToSeconds(rawSyncTime) - parseTimeToSeconds(youtubeSyncTime);
-
     return (
       <main
         className="relative min-h-screen overflow-hidden bg-slate-950 p-6 text-white"
@@ -903,8 +899,9 @@ ${group.clips
       >
         <div className="absolute inset-0 bg-black/75" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/55 to-black/90" />
-        <div className="relative z-10 mx-auto max-w-7xl">
-          <div className="mb-6 grid grid-cols-3 items-center gap-3 rounded-2xl border border-white/15 bg-white/10 backdrop-blur-md p-4 shadow-2xl">
+
+        <div className="relative z-10 mx-auto flex min-h-screen max-w-6xl flex-col">
+          <header className="mb-8 grid grid-cols-3 items-center gap-3 rounded-2xl border border-white/15 bg-white/10 p-4 shadow-2xl backdrop-blur-md">
             <div className="flex justify-start">
               <button
                 onClick={() => setActiveTool("home")}
@@ -916,7 +913,7 @@ ${group.clips
 
             <div className="text-center">
               <p className="text-[10px] font-bold uppercase tracking-[0.45em] text-cyan-400">
-                V4.0.3 Foundation
+                Desktop Required
               </p>
               <h1 className="text-3xl font-black">Auto Clip Creator</h1>
             </div>
@@ -929,228 +926,78 @@ ${group.clips
                 Back to Analysis
               </button>
             </div>
-          </div>
+          </header>
 
-          <section className="mb-6 grid grid-cols-12 gap-4">
-            <div className="col-span-4 rounded-2xl border border-white/15 bg-white/10 backdrop-blur-md p-5 shadow-xl">
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.3em] text-cyan-400">
-                Match Loaded
-              </p>
-              <h2 className="text-3xl font-black">
-                {source?.matchName || "No Match"}{source?.opposition ? ` vs ${source.opposition}` : ""}
-              </h2>
-              <p className="mt-2 text-slate-400">{source?.competition || "Competition not specified"}</p>
+          <section className="flex flex-1 items-center justify-center">
+            <div className="grid w-full grid-cols-12 gap-6">
+              <div className="col-span-7 rounded-3xl border border-white/15 bg-white/10 p-10 shadow-2xl backdrop-blur-md">
+                <p className="mb-3 text-sm font-bold uppercase tracking-[0.35em] text-red-400">
+                  Video Compilation Engine
+                </p>
+                <h2 className="mb-5 text-5xl font-black leading-tight">
+                  Built for large rugby footage.
+                </h2>
+                <p className="mb-8 text-lg leading-8 text-slate-200">
+                  The Auto Clip Creator runs as a desktop app because full match footage can be several gigabytes. The desktop version uses local FFmpeg processing to handle MOV and MP4 files properly without browser memory limits.
+                </p>
 
-              <div className="mt-5 grid grid-cols-2 gap-3">
-                <div className="rounded-xl bg-black/30 p-4">
-                  <p className="text-xs uppercase tracking-widest text-slate-400">Events Loaded</p>
-                  <p className="mt-1 text-4xl font-black text-cyan-400">{sourceEvents.length}</p>
-                </div>
-                <div className="rounded-xl bg-black/30 p-4">
-                  <p className="text-xs uppercase tracking-widest text-slate-400">Offset</p>
-                  <p className="mt-1 text-4xl font-black text-green-400">{offset}s</p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="rounded-2xl border border-white/10 bg-black/30 p-5">
+                    <p className="text-3xl">🎥</p>
+                    <h3 className="mt-3 text-xl font-black">Large MOV/MP4</h3>
+                    <p className="mt-2 text-sm text-slate-300">Handles full match files locally on your PC.</p>
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-black/30 p-5">
+                    <p className="text-3xl">⚙️</p>
+                    <h3 className="mt-3 text-xl font-black">Native FFmpeg</h3>
+                    <p className="mt-2 text-sm text-slate-300">Cuts and merges clips using a proper desktop engine.</p>
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-black/30 p-5">
+                    <p className="text-3xl">📄</p>
+                    <h3 className="mt-3 text-xl font-black">Import Analysis TXT</h3>
+                    <p className="mt-2 text-sm text-slate-300">Uses exported event logs from the analysis platform.</p>
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-black/30 p-5">
+                    <p className="text-3xl">🏉</p>
+                    <h3 className="mt-3 text-xl font-black">Separate Compilations</h3>
+                    <p className="mt-2 text-sm text-slate-300">Creates separate videos for each selected category.</p>
+                  </div>
                 </div>
               </div>
 
-              <div className="mt-5 grid grid-cols-2 gap-3">
+              <div className="col-span-5 rounded-3xl border border-white/15 bg-white/10 p-10 shadow-2xl backdrop-blur-md">
+                <p className="mb-3 text-sm font-bold uppercase tracking-[0.35em] text-cyan-400">
+                  Coming Next
+                </p>
+                <h2 className="mb-5 text-4xl font-black">Desktop Download</h2>
+                <p className="mb-6 text-slate-300">
+                  Once the Windows app is packaged, this page will host the download link.
+                </p>
+
                 <button
-                  onClick={clearClipData}
-                  disabled={!sourceEvents.length}
-                  className="rounded-lg bg-slate-700 px-4 py-3 font-bold transition hover:scale-[1.02] hover:bg-slate-600 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
+                  disabled
+                  className="mb-4 w-full cursor-not-allowed rounded-lg bg-white/10 px-5 py-4 text-lg font-black text-slate-400 opacity-60"
                 >
-                  Clear Data
+                  Download Windows App — Coming Soon
                 </button>
 
-                <label className="cursor-pointer rounded-lg bg-red-600 px-4 py-3 text-center font-bold transition hover:scale-[1.02] hover:bg-red-500 active:scale-95">
-                  Import Analysis TXT
-                  <input
-                    type="file"
-                    accept=".txt,text/plain"
-                    className="hidden"
-                    onChange={(e) => importAnalysisTXT(e.target.files?.[0])}
-                  />
-                </label>
-              </div>
-            </div>
-
-            <div className="col-span-4 rounded-2xl border border-white/15 bg-white/10 backdrop-blur-md p-5 shadow-xl">
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.3em] text-cyan-400">
-                Raw Footage
-              </p>
-              <h2 className="text-2xl font-black">Upload Match Video</h2>
-              <p className="mt-2 text-sm text-slate-400">
-                MVP step: we store the file name now. Actual MP4 cutting comes after clip windows are verified.
-              </p>
-
-              <label className="mt-5 flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-white/20 bg-black/30 p-8 text-center transition hover:border-cyan-400 hover:bg-slate-800">
-                <span className="text-4xl">🎥</span>
-                <span className="mt-3 font-bold">Choose Raw Match MP4</span>
-                <span className="mt-1 text-sm text-slate-400">{rawVideoName || "No file selected"}</span>
-                <input
-                  type="file"
-                  accept="video/*"
-                  className="hidden"
-                  onChange={(e) => setRawVideoName(e.target.files?.[0]?.name || "")}
-                />
-              </label>
-            </div>
-
-            <div className="col-span-4 rounded-2xl border border-white/15 bg-white/10 backdrop-blur-md p-5 shadow-xl">
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.3em] text-cyan-400">
-                Sync & Padding
-              </p>
-              <h2 className="text-2xl font-black">Timing Setup</h2>
-
-              <div className="mt-5 grid grid-cols-2 gap-3">
-                <div>
-                  <label className="mb-1 block text-sm font-bold text-slate-300">YouTube Sync Time</label>
-                  <input
-                    className="w-full rounded-lg border border-white/20 bg-black/30 p-3 text-white outline-none focus:border-cyan-400"
-                    placeholder="00:45"
-                    value={youtubeSyncTime}
-                    onChange={(e) => setYoutubeSyncTime(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-sm font-bold text-slate-300">Raw Video Sync Time</label>
-                  <input
-                    className="w-full rounded-lg border border-white/20 bg-black/30 p-3 text-white outline-none focus:border-cyan-400"
-                    placeholder="01:20"
-                    value={rawSyncTime}
-                    onChange={(e) => setRawSyncTime(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-sm font-bold text-slate-300">Before Clip</label>
-                  <input
-                    type="number"
-                    className="w-full rounded-lg border border-white/20 bg-black/30 p-3 text-white outline-none focus:border-cyan-400"
-                    value={clipBeforeSeconds}
-                    onChange={(e) => setClipBeforeSeconds(Number(e.target.value))}
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-sm font-bold text-slate-300">After Clip</label>
-                  <input
-                    type="number"
-                    className="w-full rounded-lg border border-white/20 bg-black/30 p-3 text-white outline-none focus:border-cyan-400"
-                    value={clipAfterSeconds}
-                    onChange={(e) => setClipAfterSeconds(Number(e.target.value))}
-                  />
-                </div>
-              </div>
-
-              <p className="mt-4 rounded-lg bg-black/30 p-3 text-sm text-slate-300">
-                Default padding: <span className="font-bold text-cyan-400">10s before</span> and <span className="font-bold text-cyan-400">5s after</span>.
-              </p>
-            </div>
-          </section>
-
-          <section className="mb-6 grid grid-cols-12 gap-4">
-            <div className="col-span-5 rounded-2xl border border-white/15 bg-white/10 backdrop-blur-md p-5 shadow-xl">
-              <div className="mb-4 flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.3em] text-cyan-400">Events</p>
-                  <h2 className="text-2xl font-black">Select Clips To Include</h2>
-                </div>
-                <span className="rounded-full bg-cyan-400/10 px-3 py-1 text-sm font-bold text-cyan-400">
-                  {selectedClipTypes.length} selected
-                </span>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2">
-                {clipTypeOptions.map((type) => {
-                  const selected = selectedClipTypes.includes(type);
-                  return (
-                    <button
-                      key={type}
-                      onClick={() => toggleClipType(type)}
-                      className={`rounded-lg border px-3 py-2 text-left text-sm font-bold transition hover:scale-[1.02] active:scale-95 ${
-                        selected
-                          ? "border-cyan-400 bg-cyan-400 text-slate-950"
-                          : "border-white/20 bg-black/30 text-slate-300 hover:border-cyan-400"
-                      }`}
-                    >
-                      {selected ? "✓ " : ""}{type}
-                    </button>
-                  );
-                })}
-              </div>
-
-              <button
-                onClick={generateClipList}
-                className="mt-5 w-full rounded-lg bg-red-600 px-5 py-4 text-lg font-black transition hover:scale-[1.02] hover:bg-red-500 active:scale-95"
-              >
-                Preview Clip Times
-              </button>
-            </div>
-
-            <div className="col-span-7 rounded-2xl border border-white/15 bg-white/10 backdrop-blur-md p-5 shadow-xl">
-              <div className="mb-4 flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.3em] text-cyan-400">Compilation Preview</p>
-                  <h2 className="text-2xl font-black">Clip Windows</h2>
-                </div>
                 <button
-                  onClick={clearCompilationPreview}
-                  disabled={generatedClips.length === 0}
-                  className="rounded-lg bg-slate-700 px-4 py-2 text-sm font-bold transition hover:scale-105 hover:bg-slate-600 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
+                  onClick={() => setActiveTool("analysis")}
+                  className="w-full rounded-lg bg-red-600 px-5 py-4 text-lg font-black transition hover:scale-[1.02] hover:bg-red-500 active:scale-95"
                 >
-                  Clear Preview
+                  Open Match Analysis →
                 </button>
+
+                <div className="mt-8 rounded-2xl border border-cyan-400/20 bg-cyan-400/10 p-5">
+                  <h3 className="mb-2 text-lg font-black text-cyan-400">Workflow</h3>
+                  <p className="text-sm leading-7 text-slate-200">
+                    1. Analyse match on the web platform<br />
+                    2. Export or save analysis data<br />
+                    3. Open desktop Auto Clip Creator<br />
+                    4. Import raw footage and create MP4 compilations
+                  </p>
+                </div>
               </div>
-
-              {generatedClips.length === 0 ? (
-                <div className="rounded-2xl border border-dashed border-white/20 bg-black/20 p-12 text-center text-slate-400">
-                  Generate a clip list to preview adjusted raw-footage timings.
-                </div>
-              ) : (
-                <div className="max-h-[520px] space-y-5 overflow-y-auto pr-2">
-                  {generatedClips.map((group) => (
-                    <div key={group.type} className="rounded-2xl border border-white/20 bg-black/30 p-4">
-                      <div className="mb-3 flex items-center justify-between">
-                        <h3 className="text-xl font-black text-cyan-400">
-                          {group.type} Compilation
-                        </h3>
-                        <div className="flex items-center gap-2">
-                          <span className="rounded-full bg-cyan-400/10 px-3 py-1 text-sm font-bold text-cyan-400">
-                            {group.clips.length} clips
-                          </span>
-                          <span className="rounded-full bg-green-400/10 px-3 py-1 text-sm font-bold text-green-400">
-                            {formatTime(totalGroupDuration(group))} total
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        {group.clips.map((clip, index) => (
-                          <div key={`${group.type}-${clip.id}-${index}`} className="rounded-xl border border-white/15 bg-white/10 backdrop-blur-md p-4">
-                            <div className="flex items-center justify-between gap-4">
-                              <div>
-                                <p className="text-sm font-bold text-cyan-400">Clip {index + 1}</p>
-                                <p className="text-lg font-black">{clip.label}</p>
-                                <p className="text-sm text-slate-400">Original YouTube event: {clip.originalTime}</p>
-                              </div>
-                              <div className="text-right">
-                                <p className="text-xs uppercase tracking-widest text-slate-400">Raw Footage Clip</p>
-                                <p className="text-2xl font-black text-green-400">
-                                  {formatTime(clip.rawStart)} → {formatTime(clip.rawEnd)}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-              <button
-                disabled
-                className="mt-5 w-full cursor-not-allowed rounded-lg bg-white/10 px-5 py-4 text-lg font-black text-slate-400 opacity-60"
-              >
-                Generate MP4 Compilations — Coming Soon
-              </button>
             </div>
           </section>
         </div>
@@ -1218,13 +1065,6 @@ ${group.clips
               className="rounded-lg bg-slate-700 px-4 py-2 text-sm font-bold text-white transition hover:scale-105 hover:bg-slate-600 active:scale-95"
             >
               Save Match
-            </button>
-
-            <button
-              onClick={sendToCompilationTool}
-              className="rounded-lg bg-red-600 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-red-500/20 transition hover:scale-105 hover:bg-red-500 active:scale-95"
-            >
-              🎬 Send to Compilation Tool
             </button>
 
             <button
