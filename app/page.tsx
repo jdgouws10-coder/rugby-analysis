@@ -974,12 +974,14 @@ ${group.clips
                   Once the Windows app is packaged, this page will host the download link.
                 </p>
 
-                <button
-                  disabled
-                  className="mb-4 w-full cursor-not-allowed rounded-lg bg-white/10 px-5 py-4 text-lg font-black text-slate-400 opacity-60"
-                >
-                  Download Windows App — Coming Soon
-                </button>
+                <a
+  href="https://github.com/jdgouws10-coder/rugby-analysis/releases/download/v1.0.0/Rugby-Compilation-Engine-Setup.exe"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="mb-4 block w-full rounded-lg bg-cyan-400 px-5 py-4 text-center text-lg font-black text-slate-950 transition hover:scale-[1.02] hover:bg-cyan-300 active:scale-95"
+>
+  Download Windows App
+</a>
 
                 <button
                   onClick={() => setActiveTool("analysis")}
