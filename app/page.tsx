@@ -17,7 +17,7 @@ type EventLog = {
   note?: string;
 };
 
-type ActiveTool = "home" | "analysis" | "clips" | "moves";
+type ActiveTool = "home" | "analysis" | "clips" | "plays" | "support";
 
 const zones = ["Own 22", "Own Half", "Midfield", "Opp Half", "Opp 22"];
 const attackTypes = ["Set Piece", "Transition", "Turnover", "Kick Return"];
@@ -163,6 +163,8 @@ export default function Home() {
   const [noteText, setNoteText] = useState("");
   const [showDashboard, setShowDashboard] = useState(false);
   const [showEventLog, setShowEventLog] = useState(false);
+  const [noticeTitle, setNoticeTitle] = useState("Rugby Analysis Suite");
+  const [noticeMessage, setNoticeMessage] = useState("");
 
   const [clipSource, setClipSource] = useState<any>(null);
   const [rawVideoName, setRawVideoName] = useState("");
@@ -249,6 +251,41 @@ export default function Home() {
     }
   }, []);
 
+  function showNotice(message: string, title = "Rugby Analysis Suite") {
+    setNoticeTitle(title);
+    setNoticeMessage(message);
+  }
+
+  function closeNotice() {
+    setNoticeMessage("");
+  }
+
+  function NoticeOverlay() {
+    if (!noticeMessage) return null;
+
+    return (
+      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/75 px-4 backdrop-blur-sm">
+        <div className="w-full max-w-md overflow-hidden rounded-3xl border border-[#70E000]/30 bg-[#06110A]/95 shadow-[0_0_60px_rgba(112,224,0,0.18)]">
+          <div className="border-b border-white/10 bg-gradient-to-r from-[#123C1C] to-[#06110A] px-6 py-5">
+            <p className="text-xs font-black uppercase tracking-[0.35em] text-[#70E000]">Notification</p>
+            <h2 className="mt-2 text-2xl font-black text-white">{noticeTitle}</h2>
+          </div>
+
+          <div className="px-6 py-6">
+            <p className="text-base leading-7 text-slate-200">{noticeMessage}</p>
+
+            <button
+              onClick={closeNotice}
+              className="mt-6 w-full rounded-xl bg-[#70E000] px-5 py-3 text-sm font-black uppercase tracking-widest text-[#041008] transition hover:scale-[1.02] hover:bg-[#8BFF2A] active:scale-95"
+            >
+              Got it
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   function saveMatch() {
     if (!requireTeamNames()) return;
 
@@ -261,7 +298,7 @@ export default function Home() {
     };
 
     localStorage.setItem("rugby-analysis-v32", JSON.stringify(data));
-    alert("Match saved on this browser.");
+    showNotice("Match saved on this browser.");
   }
 
   function clearMatch() {
@@ -494,29 +531,29 @@ export default function Home() {
 
     if (clipData) {
       setClipSource(JSON.parse(clipData));
-      alert("Clip data loaded from Compilation Tool package.");
+      showNotice("Clip data loaded from Compilation Tool package.");
       return;
     }
 
     if (savedMatch) {
       setClipSource(JSON.parse(savedMatch));
-      alert("Saved match loaded for clip creation.");
+      showNotice("Saved match loaded for clip creation.");
       return;
     }
 
-    alert("No saved analysis data found yet.");
+    showNotice("No saved analysis data found yet.");
   }
 
   function generateClipList() {
     const sourceEvents: EventLog[] = clipSource?.events?.length ? clipSource.events : events;
 
     if (sourceEvents.length === 0) {
-      alert("No events available. Send analysis to the Compilation Tool or import an analysis TXT first.");
+      showNotice("No events available. Send analysis to the Compilation Tool or import an analysis TXT first.");
       return;
     }
 
     if (selectedClipTypes.length === 0) {
-      alert("Select at least one event type to include.");
+      showNotice("Select at least one event type to include.");
       return;
     }
 
@@ -547,7 +584,7 @@ export default function Home() {
       .filter((group) => group.clips.length > 0);
 
     if (clipGroups.length === 0) {
-      alert("No matching events found for the selected clip types.");
+      showNotice("No matching events found for the selected clip types.");
       return;
     }
 
@@ -574,7 +611,7 @@ export default function Home() {
 
   function exportClipListTXT() {
     if (generatedClips.length === 0) {
-      alert("Generate a clip list first.");
+      showNotice("Generate a clip list first.");
       return;
     }
 
@@ -638,7 +675,7 @@ ${group.clips
 
   function requireTeamNames() {
     if (!matchName.trim() || !opposition.trim()) {
-      alert("Please fill in both team names before exporting or sending to the compilation tool.");
+      showNotice("Please fill in both team names before exporting or sending to the compilation tool.");
       return false;
     }
 
@@ -668,7 +705,7 @@ ${group.clips
     const eventLogIndex = lines.findIndex((line) => line.trim().toUpperCase() === "EVENT LOG");
 
     if (eventLogIndex === -1) {
-      alert("No EVENT LOG section found in this TXT file.");
+      showNotice("No EVENT LOG section found in this TXT file.");
       return;
     }
 
@@ -756,7 +793,7 @@ ${group.clips
     });
 
     if (importedEvents.length === 0) {
-      alert("No events could be imported from this TXT file.");
+      showNotice("No events could be imported from this TXT file.");
       return;
     }
 
@@ -774,7 +811,7 @@ ${group.clips
     setClipSource(importedData);
     localStorage.setItem("rugby-clip-data", JSON.stringify(importedData));
     setGeneratedClips([]);
-    alert(`${importedEvents.length} events imported for compilation.`);
+    showNotice(`${importedEvents.length} events imported for compilation.`);
   }
 
   function importAnalysisTXT(file?: File) {
@@ -790,99 +827,126 @@ ${group.clips
   }
 
   if (activeTool === "home") {
+    const applicationCards = [
+      {
+        title: "Match Analysis",
+        status: "AVAILABLE",
+        description: "Tag matches, track KPIs and export professional stat reports.",
+        action: "Launch →",
+        onClick: () => setActiveTool("analysis"),
+      },
+      {
+        title: "Desktop Clip Engine",
+        status: "AVAILABLE",
+        description: "Generate chronological MP4 compilations from tagged events.",
+        action: "Download →",
+        onClick: () => setActiveTool("clips"),
+      },
+      {
+        title: "Play Creator",
+        status: "IN DEVELOPMENT",
+        description: "Design attacking plays, strike plays and training patterns.",
+        action: "Preview →",
+        onClick: () => setActiveTool("plays"),
+      },
+    ];
+
     return (
       <main
-        className="relative min-h-screen overflow-hidden bg-slate-950 text-white"
+        className="relative min-h-screen overflow-hidden bg-[#030805] text-white"
         style={{
-          backgroundImage: "url('/munster-bg.jpg')",
+          backgroundImage: "url('/connacht-bg.jpeg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
       >
-        <div className="absolute inset-0 bg-black/70" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/80" />
+        <div className="absolute inset-0 bg-black/72" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(112,224,0,0.26),transparent_34%),linear-gradient(115deg,rgba(2,8,5,0.98)_0%,rgba(3,12,7,0.88)_44%,rgba(3,8,5,0.74)_100%)]" />
 
-        <div className="relative z-10 flex min-h-screen flex-col px-8 py-8">
-          <header className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-red-400/60 bg-black/40 text-2xl">
-                🏉
+        <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-[1380px] flex-col px-8 py-6">
+          <header className="flex items-center justify-between rounded-3xl border border-white/10 bg-black/35 px-7 py-4 shadow-2xl backdrop-blur-md">
+            <button onClick={() => setActiveTool("home")} className="flex items-center gap-4 text-left">
+              <img
+                src="/ras-logo.png"
+                alt="Rugby Analysis Suite logo"
+                className="h-24 w-24 rounded-2xl object-contain shadow-[0_0_40px_rgba(112,224,0,0.3)]"
+              />
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.45em] text-[#70E000]">Rugby</p>
+                <h1 className="text-2xl font-black uppercase leading-tight tracking-tight">Analysis Suite</h1>
               </div>
-              <h1 className="text-2xl font-black uppercase tracking-tight">
-                <span className="text-red-500">Rugby</span> Analysis Suite
-              </h1>
-            </div>
+            </button>
 
-            <div className="rounded-lg border border-white/20 bg-black/30 px-4 py-2 font-bold">
-              v4.0.2
-            </div>
+            <nav className="flex items-center gap-3 text-sm font-black uppercase tracking-widest text-slate-200">
+              <button onClick={() => showNotice("The full features section is being built into the next website update.", "Features") } className="rounded-xl px-4 py-3 transition hover:bg-white/10 hover:text-[#70E000]">Features</button>
+              <button onClick={() => showNotice("A product walkthrough demo will be added once the final UI polish is complete.", "Demo") } className="rounded-xl px-4 py-3 transition hover:bg-white/10 hover:text-[#70E000]">Demo</button>
+              <button onClick={() => setActiveTool("support")} className="rounded-xl border border-[#70E000]/40 bg-[#70E000]/10 px-4 py-3 text-[#70E000] transition hover:bg-[#70E000] hover:text-[#041008]">Support</button>
+            </nav>
           </header>
 
-          <section className="flex flex-1 flex-col items-center justify-center text-center">
-            <p className="mb-3 text-sm font-bold uppercase tracking-[0.4em] text-red-400">
-              Coach Workstation
-            </p>
-            <h2 className="max-w-5xl text-7xl font-black uppercase leading-none tracking-tight md:text-8xl">
-              <span className="block text-red-500">Rugby</span>
-              Analysis Suite
-            </h2>
-            <p className="mt-6 text-2xl text-slate-200">Analyse. Clip. Coach.</p>
-
-            <div className="mt-16 grid w-full max-w-6xl grid-cols-3 gap-6">
-              <div className="rounded-3xl border border-white/20 bg-white/10 p-8 text-left shadow-2xl backdrop-blur-md">
-                <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-xl border border-red-400/50 text-4xl text-red-500">
-                  📊
-                </div>
-                <h3 className="mb-4 text-3xl font-black uppercase">Match Analysis</h3>
-                <p className="mb-8 text-lg text-slate-200">
-                  Analyse matches, log events and generate clean stat sheets.
-                </p>
-                <button
-                  onClick={() => setActiveTool("analysis")}
-                  className="w-full rounded-lg bg-red-600 px-5 py-4 text-lg font-bold hover:bg-red-500"
-                >
-                  Launch Analysis →
-                </button>
+          <section className="grid flex-1 grid-cols-[1.08fr_0.92fr] items-center gap-12 py-6">
+            <div className="pt-2">
+              <div className="mb-5 inline-flex rounded-full border border-[#70E000]/30 bg-[#70E000]/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.32em] text-[#70E000]">
+                Professional Performance Analysis Platform
               </div>
 
-              <div className="rounded-3xl border border-white/20 bg-white/10 p-8 text-left shadow-2xl backdrop-blur-md">
-                <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-xl border border-red-400/50 text-4xl text-red-500">
-                  🎬
-                </div>
-                <h3 className="mb-4 text-3xl font-black uppercase">Auto Clip Creator</h3>
-                <p className="mb-8 text-lg text-slate-200">
-                  Create highlight compilations from your tagged match events.
-                </p>
-                <button
-                  onClick={() => setActiveTool("clips")}
-                  className="w-full rounded-lg bg-red-600 px-5 py-4 text-lg font-bold text-white hover:bg-red-500"
-                >
-                  Desktop App Info →
-                </button>
-              </div>
+              <h2 className="max-w-3xl text-7xl font-black uppercase leading-[0.86] tracking-tight md:text-[88px]">
+                Rugby<br />Analysis<br />Suite
+              </h2>
 
-              <div className="rounded-3xl border border-white/20 bg-white/10 p-8 text-left shadow-2xl backdrop-blur-md">
-                <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-xl border border-red-400/50 text-4xl text-red-500">
-                  🧠
-                </div>
-                <h3 className="mb-4 text-3xl font-black uppercase">Moves Designer</h3>
-                <p className="mb-8 text-lg text-slate-200">
-                  Build, save and present attacking shapes and training moves.
-                </p>
-                <button
-                  onClick={() => setActiveTool("moves")}
-                  className="w-full rounded-lg bg-white/20 px-5 py-4 text-lg font-bold text-white hover:bg-white/30"
-                >
-                  Coming Soon
-                </button>
+              <p className="mt-7 max-w-2xl text-[19px] leading-8 text-slate-200">
+                Professional rugby analysis software designed for coaches, performance analysts and high-performance environments.
+              </p>
+
+              <div className="mt-9 grid max-w-2xl grid-cols-3 gap-4">
+                {[
+                  ["Built by Coaches", "Designed by coaches, for coaches."],
+                  ["Performance Focused", "Clear tools for match-day analysis."],
+                  ["Always Improving", "A growing suite of rugby tools."],
+                ].map(([title, label]) => (
+                  <div
+                    key={title}
+                    className="rounded-2xl border border-[#70E000]/18 bg-black/30 p-5 backdrop-blur-md transition hover:-translate-y-1 hover:border-[#70E000]/45 hover:bg-[#70E000]/10"
+                  >
+                    <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#70E000]">{title}</p>
+                    <p className="mt-3 text-sm leading-5 text-slate-300">{label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="pt-0">
+              <p className="mb-5 text-xs font-black uppercase tracking-[0.45em] text-[#70E000]">Available Modules</p>
+              <div className="space-y-4">
+                {applicationCards.map((card) => (
+                  <button
+                    key={card.title}
+                    onClick={card.onClick}
+                    className="group w-full rounded-3xl border border-white/12 bg-white/[0.08] p-7 text-left shadow-2xl backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-[#70E000]/50 hover:bg-[#70E000]/10 hover:shadow-[0_0_50px_rgba(112,224,0,0.16)] active:scale-[0.99]"
+                  >
+                    <div className="mb-4 flex items-center justify-between gap-4">
+                      <h3 className="text-2xl font-black uppercase tracking-tight text-white">{card.title}</h3>
+                      <span className={`rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest ${card.status === "AVAILABLE" ? "bg-[#70E000]/15 text-[#70E000]" : "bg-yellow-400/15 text-yellow-300"}`}>
+                        {card.status}
+                      </span>
+                    </div>
+                    <p className="max-w-md text-sm leading-6 text-slate-300">{card.description}</p>
+                    <div className="mt-5 flex items-center justify-between">
+                      <span className="text-sm font-black uppercase tracking-widest text-[#70E000] transition group-hover:translate-x-1">{card.action}</span>
+                      <span className="h-10 w-10 rounded-full border border-[#70E000]/30 bg-[#70E000]/10 text-center text-2xl leading-10 text-[#70E000] transition group-hover:scale-110">›</span>
+                    </div>
+                  </button>
+                ))}
               </div>
             </div>
           </section>
 
-          <footer className="text-center text-sm text-slate-400">
-            Rugby Analysis Suite • Personal coaching platform
+          <footer className="flex items-center justify-between border-t border-white/10 pt-5 text-sm text-slate-400">
+            <p>Rugby Analysis Suite • Professional performance analysis software.</p>
+            <p>© 2026 JD Gouws • Version 1.0</p>
           </footer>
         </div>
+        <NoticeOverlay />
       </main>
     );
   }
@@ -890,141 +954,203 @@ ${group.clips
   if (activeTool === "clips") {
     return (
       <main
-        className="relative min-h-screen overflow-hidden bg-slate-950 p-6 text-white"
+        className="relative min-h-screen overflow-hidden bg-[#030805] p-6 text-white"
         style={{
-          backgroundImage: "url('/munster-bg.jpg')",
+          backgroundImage: "url('/connacht-bg.jpeg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
       >
-        <div className="absolute inset-0 bg-black/75" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/55 to-black/90" />
+        <div className="absolute inset-0 bg-black/78" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(112,224,0,0.22),transparent_35%),linear-gradient(120deg,rgba(3,8,5,0.98),rgba(3,18,8,0.86))]" />
 
         <div className="relative z-10 mx-auto flex min-h-screen max-w-6xl flex-col">
-          <header className="mb-8 grid grid-cols-3 items-center gap-3 rounded-2xl border border-white/15 bg-white/10 p-4 shadow-2xl backdrop-blur-md">
-            <div className="flex justify-start">
-              <button
-                onClick={() => setActiveTool("home")}
-                className="rounded-lg border border-white/20 bg-black/30 px-4 py-2 text-sm font-bold transition hover:scale-105 hover:border-cyan-400 hover:bg-slate-800 active:scale-95"
-              >
-                ← Home
-              </button>
-            </div>
+          <header className="mb-8 flex items-center justify-between rounded-3xl border border-white/10 bg-black/35 p-5 shadow-2xl backdrop-blur-md">
+            <button onClick={() => setActiveTool("home")} className="flex items-center gap-4">
+              <img src="/ras-logo.png" alt="Rugby Analysis Suite" className="h-16 w-16 rounded-2xl object-contain" />
+              <div className="text-left">
+                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#70E000]">Desktop Engine</p>
+                <h1 className="text-2xl font-black">Auto Clip Creator</h1>
+              </div>
+            </button>
 
-            <div className="text-center">
-              <p className="text-[10px] font-bold uppercase tracking-[0.45em] text-cyan-400">
-                Desktop Required
-              </p>
-              <h1 className="text-3xl font-black">Auto Clip Creator</h1>
-            </div>
-
-            <div className="flex justify-end">
-              <button
-                onClick={() => setActiveTool("analysis")}
-                className="rounded-lg bg-cyan-400 px-4 py-2 text-sm font-bold text-slate-950 transition hover:scale-105 hover:bg-cyan-300 active:scale-95"
-              >
-                Back to Analysis
-              </button>
-            </div>
+            <button
+              onClick={() => setActiveTool("home")}
+              className="rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-black uppercase tracking-widest transition hover:border-[#70E000]/50 hover:text-[#70E000]"
+            >
+              ← Home
+            </button>
           </header>
 
-          <section className="flex flex-1 items-center justify-center">
-            <div className="grid w-full grid-cols-12 gap-6">
-              <div className="col-span-7 rounded-3xl border border-white/15 bg-white/10 p-10 shadow-2xl backdrop-blur-md">
-                <p className="mb-3 text-sm font-bold uppercase tracking-[0.35em] text-red-400">
-                  Video Compilation Engine
-                </p>
-                <h2 className="mb-5 text-5xl font-black leading-tight">
-                  Built for large rugby footage.
-                </h2>
-                <p className="mb-8 text-lg leading-8 text-slate-200">
-                  The Auto Clip Creator runs as a desktop app because full match footage can be several gigabytes. The desktop version uses local FFmpeg processing to handle MOV and MP4 files properly without browser memory limits.
-                </p>
+          <section className="grid flex-1 grid-cols-12 items-center gap-6">
+            <div className="col-span-7 rounded-3xl border border-white/12 bg-white/[0.08] p-10 shadow-2xl backdrop-blur-md">
+              <p className="mb-3 text-xs font-black uppercase tracking-[0.35em] text-[#70E000]">Video Compilation Engine</p>
+              <h2 className="mb-5 text-5xl font-black leading-tight">Built for large rugby footage.</h2>
+              <p className="mb-8 text-lg leading-8 text-slate-200">
+                The Auto Clip Creator runs as a desktop app because full match footage can be several gigabytes. The desktop version uses local FFmpeg processing to handle MOV and MP4 files properly without browser memory limits.
+              </p>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="rounded-2xl border border-white/10 bg-black/30 p-5">
-                    <p className="text-3xl">🎥</p>
-                    <h3 className="mt-3 text-xl font-black">Large MOV/MP4</h3>
-                    <p className="mt-2 text-sm text-slate-300">Handles full match files locally on your PC.</p>
+              <div className="grid grid-cols-2 gap-4">
+                {[
+                  ["Large MOV/MP4", "Handles full match files locally on your PC."],
+                  ["Native FFmpeg", "Cuts and merges clips using a proper desktop engine."],
+                  ["Import Analysis TXT", "Uses exported event logs from the analysis platform."],
+                  ["Separate Compilations", "Creates separate videos for each selected category."],
+                ].map(([title, desc]) => (
+                  <div key={title} className="rounded-2xl border border-white/10 bg-black/35 p-5 transition hover:border-[#70E000]/30 hover:bg-[#70E000]/10">
+                    <h3 className="text-xl font-black text-white">{title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-slate-300">{desc}</p>
                   </div>
-                  <div className="rounded-2xl border border-white/10 bg-black/30 p-5">
-                    <p className="text-3xl">⚙️</p>
-                    <h3 className="mt-3 text-xl font-black">Native FFmpeg</h3>
-                    <p className="mt-2 text-sm text-slate-300">Cuts and merges clips using a proper desktop engine.</p>
-                  </div>
-                  <div className="rounded-2xl border border-white/10 bg-black/30 p-5">
-                    <p className="text-3xl">📄</p>
-                    <h3 className="mt-3 text-xl font-black">Import Analysis TXT</h3>
-                    <p className="mt-2 text-sm text-slate-300">Uses exported event logs from the analysis platform.</p>
-                  </div>
-                  <div className="rounded-2xl border border-white/10 bg-black/30 p-5">
-                    <p className="text-3xl">🏉</p>
-                    <h3 className="mt-3 text-xl font-black">Separate Compilations</h3>
-                    <p className="mt-2 text-sm text-slate-300">Creates separate videos for each selected category.</p>
-                  </div>
-                </div>
+                ))}
               </div>
+            </div>
 
-              <div className="col-span-5 rounded-3xl border border-white/15 bg-white/10 p-10 shadow-2xl backdrop-blur-md">
-                <p className="mb-3 text-sm font-bold uppercase tracking-[0.35em] text-cyan-400">
-                  Coming Next
+            <div className="col-span-5 rounded-3xl border border-white/12 bg-white/[0.08] p-10 shadow-2xl backdrop-blur-md">
+              <span className="rounded-full bg-[#70E000]/15 px-3 py-1 text-xs font-black uppercase tracking-widest text-[#70E000]">Available</span>
+              <h2 className="mt-5 text-4xl font-black">Desktop Clip Engine v1.0</h2>
+              <p className="mt-4 text-slate-300">
+                Download the Windows desktop app to generate MP4 rugby compilations from your tagged analysis data.
+              </p>
+
+              <a
+                href="https://github.com/jdgouws10-coder/rugby-analysis/releases/download/v1.0.0/Rugby-Compilation-Engine-Setup.exe"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-8 block w-full rounded-xl bg-[#70E000] px-5 py-4 text-center text-lg font-black uppercase tracking-widest text-[#041008] transition hover:scale-[1.02] hover:bg-[#8BFF2A] active:scale-95"
+              >
+                Download Windows App
+              </a>
+
+              <button
+                onClick={() => setActiveTool("analysis")}
+                className="mt-4 w-full rounded-xl border border-white/15 bg-black/30 px-5 py-4 text-lg font-black uppercase tracking-widest transition hover:border-[#70E000]/40 hover:text-[#70E000]"
+              >
+                Open Match Analysis
+              </button>
+
+              <div className="mt-8 rounded-2xl border border-[#70E000]/20 bg-[#70E000]/10 p-5">
+                <h3 className="mb-2 text-lg font-black text-[#70E000]">Workflow</h3>
+                <p className="text-sm leading-7 text-slate-200">
+                  1. Analyse match on the web platform<br />
+                  2. Export or save analysis data<br />
+                  3. Open desktop Auto Clip Creator<br />
+                  4. Import raw footage and create MP4 compilations
                 </p>
-                <h2 className="mb-5 text-4xl font-black">Desktop Download</h2>
-                <p className="mb-6 text-slate-300">
-                  Once the Windows app is packaged, this page will host the download link.
-                </p>
-
-                <a
-  href="https://github.com/jdgouws10-coder/rugby-analysis/releases/download/v1.0.0/Rugby-Compilation-Engine-Setup.exe"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="mb-4 block w-full rounded-lg bg-cyan-400 px-5 py-4 text-center text-lg font-black text-slate-950 transition hover:scale-[1.02] hover:bg-cyan-300 active:scale-95"
->
-  Download Windows App
-</a>
-
-                <button
-                  onClick={() => setActiveTool("analysis")}
-                  className="w-full rounded-lg bg-red-600 px-5 py-4 text-lg font-black transition hover:scale-[1.02] hover:bg-red-500 active:scale-95"
-                >
-                  Open Match Analysis →
-                </button>
-
-                <div className="mt-8 rounded-2xl border border-cyan-400/20 bg-cyan-400/10 p-5">
-                  <h3 className="mb-2 text-lg font-black text-cyan-400">Workflow</h3>
-                  <p className="text-sm leading-7 text-slate-200">
-                    1. Analyse match on the web platform<br />
-                    2. Export or save analysis data<br />
-                    3. Open desktop Auto Clip Creator<br />
-                    4. Import raw footage and create MP4 compilations
-                  </p>
-                </div>
               </div>
             </div>
           </section>
         </div>
+        <NoticeOverlay />
       </main>
     );
   }
 
-  if (activeTool === "moves") {
+  if (activeTool === "support") {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#0B1120] p-8 text-white">
-        <div className="max-w-2xl rounded-3xl border border-slate-800 bg-slate-950 p-10 text-center shadow-2xl">
-          <p className="mb-3 text-sm font-bold uppercase tracking-[0.4em] text-cyan-400">
-            Coming Soon
+      <main
+        className="relative min-h-screen overflow-hidden bg-[#030805] p-6 text-white"
+        style={{
+          backgroundImage: "url('/connacht-bg.jpeg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <div className="absolute inset-0 bg-black/80" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(112,224,0,0.22),transparent_35%),linear-gradient(120deg,rgba(3,8,5,0.98),rgba(3,18,8,0.88))]" />
+
+        <div className="relative z-10 mx-auto flex min-h-screen max-w-5xl flex-col">
+          <header className="mb-8 flex items-center justify-between rounded-3xl border border-white/10 bg-black/35 p-5 shadow-2xl backdrop-blur-md">
+            <button onClick={() => setActiveTool("home")} className="flex items-center gap-4">
+              <img src="/ras-logo.png" alt="Rugby Analysis Suite" className="h-16 w-16 rounded-2xl object-contain" />
+              <div className="text-left">
+                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#70E000]">Support Centre</p>
+                <h1 className="text-2xl font-black">Rugby Analysis Suite</h1>
+              </div>
+            </button>
+
+            <button onClick={() => setActiveTool("home")} className="rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-black uppercase tracking-widest transition hover:border-[#70E000]/50 hover:text-[#70E000]">
+              ← Home
+            </button>
+          </header>
+
+          <section className="grid flex-1 grid-cols-12 items-center gap-8">
+            <div className="col-span-5">
+              <p className="mb-4 text-xs font-black uppercase tracking-[0.45em] text-[#70E000]">Need Help?</p>
+              <h2 className="text-6xl font-black uppercase leading-none">Support<br />Centre</h2>
+              <p className="mt-6 text-lg leading-8 text-slate-300">
+                Submit a support ticket for installation issues, clip generation problems, feedback or feature requests.
+              </p>
+              <div className="mt-8 rounded-2xl border border-[#70E000]/20 bg-[#70E000]/10 p-5">
+                <p className="text-sm font-black uppercase tracking-widest text-[#70E000]">Support Email</p>
+                <p className="mt-2 text-lg font-bold text-white">jdgouws10@gmail.com</p>
+              </div>
+            </div>
+
+            <form
+              action="https://formsubmit.co/jdgouws10@gmail.com"
+              method="POST"
+              className="col-span-7 rounded-3xl border border-white/12 bg-white/[0.08] p-8 shadow-2xl backdrop-blur-md"
+            >
+              <input type="hidden" name="_subject" value="Rugby Analysis Suite Support Ticket" />
+              <input type="hidden" name="_captcha" value="false" />
+              <input type="hidden" name="_template" value="table" />
+
+              <div className="grid grid-cols-2 gap-4">
+                <label className="text-sm font-black uppercase tracking-widest text-slate-300">
+                  Name
+                  <input required name="name" className="mt-2 w-full rounded-xl border border-white/10 bg-black/40 p-3 text-white outline-none transition focus:border-[#70E000]" placeholder="Your name" />
+                </label>
+
+                <label className="text-sm font-black uppercase tracking-widest text-slate-300">
+                  Email
+                  <input required name="email" type="email" className="mt-2 w-full rounded-xl border border-white/10 bg-black/40 p-3 text-white outline-none transition focus:border-[#70E000]" placeholder="you@email.com" />
+                </label>
+              </div>
+
+              <label className="mt-5 block text-sm font-black uppercase tracking-widest text-slate-300">
+                Subject
+                <input required name="subject" className="mt-2 w-full rounded-xl border border-white/10 bg-black/40 p-3 text-white outline-none transition focus:border-[#70E000]" placeholder="Desktop app issue / feature request" />
+              </label>
+
+              <label className="mt-5 block text-sm font-black uppercase tracking-widest text-slate-300">
+                Issue
+                <textarea required name="message" rows={7} className="mt-2 w-full rounded-xl border border-white/10 bg-black/40 p-3 text-white outline-none transition focus:border-[#70E000]" placeholder="Describe what happened, what you expected, and any error messages." />
+              </label>
+
+              <button type="submit" className="mt-6 w-full rounded-xl bg-[#70E000] px-5 py-4 text-lg font-black uppercase tracking-widest text-[#041008] transition hover:scale-[1.02] hover:bg-[#8BFF2A] active:scale-95">
+                Submit Ticket
+              </button>
+            </form>
+          </section>
+        </div>
+        <NoticeOverlay />
+      </main>
+    );
+  }
+
+  if (activeTool === "plays") {
+    return (
+      <main
+        className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#030805] p-8 text-white"
+        style={{
+          backgroundImage: "url('/connacht-bg.jpeg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <div className="absolute inset-0 bg-black/82" />
+        <div className="relative z-10 w-full max-w-3xl rounded-3xl border border-[#70E000]/25 bg-black/55 p-10 text-center shadow-[0_0_70px_rgba(112,224,0,0.15)] backdrop-blur-md">
+          <img src="/ras-logo.png" alt="Rugby Analysis Suite" className="mx-auto mb-6 h-24 w-24 rounded-3xl object-contain" />
+          <p className="mb-3 text-sm font-black uppercase tracking-[0.45em] text-[#70E000]">In Development</p>
+          <h1 className="mb-4 text-6xl font-black uppercase">Play Creator</h1>
+          <p className="mx-auto mb-8 max-w-xl text-lg leading-8 text-slate-300">
+            Design attacking plays, strike plays and training patterns inside Rugby Analysis Suite. This module is currently being developed.
           </p>
-          <h1 className="mb-4 text-5xl font-black">Moves Designer</h1>
-          <p className="mb-8 text-lg text-slate-300">
-            This will become the tool for designing and animating rugby moves.
-          </p>
-          <button
-            onClick={() => setActiveTool("home")}
-            className="rounded-lg bg-cyan-400 px-6 py-3 font-bold text-slate-950 hover:bg-cyan-300"
-          >
+          <button onClick={() => setActiveTool("home")} className="rounded-xl bg-[#70E000] px-7 py-4 font-black uppercase tracking-widest text-[#041008] transition hover:scale-105 hover:bg-[#8BFF2A] active:scale-95">
             ← Back Home
           </button>
         </div>
+        <NoticeOverlay />
       </main>
     );
   }
@@ -1453,6 +1579,7 @@ ${group.clips
           </div>
         )}
       </div>
+      <NoticeOverlay />
     </main>
   );
 }
