@@ -951,6 +951,102 @@ ${group.clips
     );
   }
 
+
+  if (activeTool === "analysis") {
+    return (
+      <main
+        className="relative min-h-screen overflow-hidden bg-[#030805] p-6 text-white"
+        style={{
+          backgroundImage: "url('/connacht-bg.jpeg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <div className="absolute inset-0 bg-black/78" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(112,224,0,0.22),transparent_35%),linear-gradient(120deg,rgba(3,8,5,0.98),rgba(3,18,8,0.86))]" />
+
+        <div className="relative z-10 mx-auto flex min-h-screen max-w-6xl flex-col">
+          <header className="mb-8 flex items-center justify-between rounded-3xl border border-white/10 bg-black/35 p-5 shadow-2xl backdrop-blur-md">
+            <button onClick={() => setActiveTool("home")} className="flex items-center gap-4">
+              <img src="/ras-logo.png" alt="Rugby Analysis Suite" className="h-16 w-16 rounded-2xl object-contain" />
+              <div className="text-left">
+                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#70E000]">Analysis Module</p>
+                <h1 className="text-2xl font-black">Match Analysis</h1>
+              </div>
+            </button>
+
+            <button
+              onClick={() => setActiveTool("home")}
+              className="rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-black uppercase tracking-widest transition hover:border-[#70E000]/50 hover:text-[#70E000]"
+            >
+              ← Home
+            </button>
+          </header>
+
+          <section className="grid flex-1 grid-cols-12 items-center gap-6">
+            <div className="col-span-7 rounded-3xl border border-white/12 bg-white/[0.08] p-10 shadow-2xl backdrop-blur-md">
+              <p className="mb-3 text-xs font-black uppercase tracking-[0.35em] text-[#70E000]">Performance Analysis Platform</p>
+              <h2 className="mb-5 text-5xl font-black leading-tight">Analyse matches directly from raw footage.</h2>
+              <p className="mb-8 text-lg leading-8 text-slate-200">
+                The Match Analysis module is now built into the Windows desktop app. Load full match footage, tag key events, track KPIs, export stat reports and send tagged logs straight into Compilation Videos.
+              </p>
+
+              <div className="grid grid-cols-2 gap-4">
+                {[
+                  ["Raw Footage Analysis", "Analyse MOV and MP4 match footage inside the desktop app."],
+                  ["Event Tagging", "Tag attacks, set pieces, kicking outcomes and pitch zones."],
+                  ["Stat Reports", "Export clean PDF stat reports from your tagged events."],
+                  ["Compilation Ready", "Send tagged events straight into Compilation Videos."],
+                ].map(([title, desc]) => (
+                  <div key={title} className="rounded-2xl border border-white/10 bg-black/35 p-5 transition hover:border-[#70E000]/30 hover:bg-[#70E000]/10">
+                    <h3 className="text-xl font-black text-white">{title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-slate-300">{desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="col-span-5 rounded-3xl border border-white/12 bg-white/[0.08] p-10 shadow-2xl backdrop-blur-md">
+              <span className="rounded-full bg-[#70E000]/15 px-3 py-1 text-xs font-black uppercase tracking-widest text-[#70E000]">Available</span>
+              <h2 className="mt-5 text-4xl font-black">Match Analysis v1.0</h2>
+              <p className="mt-4 text-slate-300">
+                Download Rugby Analysis Suite for Windows to analyse match footage, tag events and generate professional rugby reports.
+              </p>
+
+              <a
+                href="https://github.com/jdgouws10-coder/rugby-analysis-suite/releases/latest/download/Rugby-Analysis-Suite-Setup.exe"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-8 block w-full rounded-xl bg-[#70E000] px-5 py-4 text-center text-lg font-black uppercase tracking-widest text-[#041008] transition hover:scale-[1.02] hover:bg-[#8BFF2A] active:scale-95"
+              >
+                Download Windows App
+              </a>
+
+              <button
+                onClick={() => setActiveTool("clips")}
+                className="mt-4 w-full rounded-xl border border-white/15 bg-black/30 px-5 py-4 text-lg font-black uppercase tracking-widest transition hover:border-[#70E000]/40 hover:text-[#70E000]"
+              >
+                View Compilation Videos
+              </button>
+
+              <div className="mt-8 rounded-2xl border border-[#70E000]/20 bg-[#70E000]/10 p-5">
+                <h3 className="mb-2 text-lg font-black text-[#70E000]">Workflow</h3>
+                <p className="text-sm leading-7 text-slate-200">
+                  1. Download Rugby Analysis Suite<br />
+                  2. Install the Windows desktop app<br />
+                  3. Open Match Analysis and load footage<br />
+                  4. Tag events and export stat reports<br />
+                  5. Send logs to Compilation Videos
+                </p>
+              </div>
+            </div>
+          </section>
+        </div>
+        <NoticeOverlay />
+      </main>
+    );
+  }
+
   if (activeTool === "clips") {
     return (
       <main
@@ -1025,16 +1121,16 @@ ${group.clips
                 onClick={() => setActiveTool("analysis")}
                 className="mt-4 w-full rounded-xl border border-white/15 bg-black/30 px-5 py-4 text-lg font-black uppercase tracking-widest transition hover:border-[#70E000]/40 hover:text-[#70E000]"
               >
-                Open Match Analysis
+                View Match Analysis
               </button>
 
               <div className="mt-8 rounded-2xl border border-[#70E000]/20 bg-[#70E000]/10 p-5">
                 <h3 className="mb-2 text-lg font-black text-[#70E000]">Workflow</h3>
                 <p className="text-sm leading-7 text-slate-200">
-                  1. Analyse match on the web platform<br />
-                  2. Export or save analysis data<br />
-                  3. Open desktop Auto Clip Creator<br />
-                  4. Import raw footage and create MP4 compilations
+                  1. Download Rugby Analysis Suite<br />
+                  2. Analyse match footage in the desktop app<br />
+                  3. Tag events and send logs to Compilation Videos<br />
+                  4. Generate MP4 rugby compilations
                 </p>
               </div>
             </div>
@@ -1571,9 +1667,13 @@ ${group.clips
                 >
                   Cancel
                 </button>
-                <button onClick={saveNote} className="rounded-lg bg-cyan-400 px-4 py-2 font-bold text-slate-950 hover:bg-cyan-300">
-                  Save Note
-                </button>
+                <button
+  type="button"
+  onClick={saveNote}
+  className="rounded-lg bg-cyan-400 px-4 py-2 font-bold text-slate-950 hover:bg-cyan-300"
+>
+  Save Note
+</button>
               </div>
             </div>
           </div>
