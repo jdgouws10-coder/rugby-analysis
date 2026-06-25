@@ -1013,7 +1013,7 @@ ${group.clips
               </p>
 
               <a
-                href="https://github.com/jdgouws10-coder/rugby-analysis/releases/download/v1.0.0/Rugby-Compilation-Engine-Setup.exe"
+                href="https://github.com/jdgouws10-coder/rugby-analysis-suite/releases/latest/download/Rugby-Analysis-Suite-Setup.exe"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-8 block w-full rounded-xl bg-[#70E000] px-5 py-4 text-center text-lg font-black uppercase tracking-widest text-[#041008] transition hover:scale-[1.02] hover:bg-[#8BFF2A] active:scale-95"
